@@ -1,54 +1,44 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+Created on Sat Feb  2 18:30:20 2019
+
+@author: dav_o
+"""
 
 import numpy as np
 from io import StringIO
 
+def leerMatriz():
+    return np.genfromtxt(StringIO((open('holamundo4','r')).read()), delimiter  = ',' )
 
-pfile=open('holamundo','r')
- 
-data=pfile.read()
- 
-pfile.close()
- 
-data=np.genfromtxt(StringIO(data), delimiter  = ',' )
+def rotarMatriz(matriz):
+    return np.rot90(matriz, k=1, axes=(0, 1))
 
-dim= list(data.shape)
-fil=dim[0]
-col=dim[1]
-sup=0
-izq=0
-der=col
-inf=fil
-recorrido=[]
- 
-print(data)
-print(fil)
-print(col) 
+def avanzar(matriz):
+    if matriz.shape[0]==1:
+        return matriz[0,0:1]
+    else:
+        return matriz[(matriz.shape[0]-1) , 1:matriz.shape[1]]
 
-while sup < inf or izq < der :
-    i=sup
-    j=izq
+def recortar(matriz):
+    return matriz[1:matriz.shape[0]-1 , 1:matriz.shape[1]-1]
+               
+def recorrer(matriz,l):   
+    if matriz.shape[0]==1:
+        print(avanzar(matriz))
+        return "Fin"
     
-    while j<der-1:
-        recorrido.append(data[i][j])
-        j=j+1
-    
-    while i<inf-1:
-        recorrido.append(data[i][j])
-        i=i+1
-        
-    while j>izq:
-        recorrido.append(data[i][j])
-        j=j-1   
-    
-    while i>sup:
-        recorrido.append(data[i][j])
-        i=i-1
-    
-    izq=izq+1
-    sup=sup+1
-    der=der-1
-    inf=inf-1
+    if matriz.shape[0]>0:
+        if l>0:
+            print(np.fliplr([avanzar(matriz)])[0])
+            recorrer(rotarMatriz(matriz),l-1)
+            
+        else:
+            recorrer(recortar(matriz),4)
+            
 
-
-print(recorrido)      
+print("Matriz Objetivo:")    
+print(leerMatriz())
+print("RECORRIDO CARACOL:") 
+print(recorrer(leerMatriz(),4))
